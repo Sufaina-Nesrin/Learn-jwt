@@ -1,0 +1,40 @@
+for those who dont understand the app.post('/api/refresh);
+
+first you should know why its using , what is the use case of creating new token as many times
+when your token will be stolen, it is dangerous and others can easily authorize in you account 
+for avoid this we are creating new tokens in many times
+
+how its happening
+here is the brief explanation
+
+1.when we login using app.post("/api/login) with our user playload means user information
+we are creating new access token with expiresIn 15s ,at the same time we also creating 
+a refreshToken with another secretKey and same playload
+and push it into an array called  refreshTokens
+
+and also send accessToken and refreshToken in res
+
+this is what happening in the /api/login calling
+
+what's next>>>
+
+2.when we called app.post('/api/refresh')
+
+we should pass the refreshToken that sent through res in req.body
+then there is condition to check is there any req.body and return res of you are not authenticated
+
+then check the corresponding req.body.token is in there that array that we have mentioned earlier
+int the login section
+if not return the res of Refresh token is invalid
+
+else ,we call the verify method with parameteres of refreshToken and the secretKey
+if error console the err and return res of refreshkey is not valid
+
+else we get new accessToken and new refreshToken ,same as created earlier,
+and also we just exclude the old refreshToken from the array and also push the newRefreshToken to the array
+
+so that, when next time when we authorize with the old refreshkey it reject witht refresh token is invalid
+and we should use newly created refreshToken
+
+cool right?
+
